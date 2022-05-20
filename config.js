@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
 
-const localhost = true;
+const localhost = false;
 
 const DATABASE = localhost
     ? "mongodb+srv://TJ10:TJ10@cluster0.t99ve.mongodb.net/?retryWrites=true&w=majority"

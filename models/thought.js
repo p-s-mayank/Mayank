@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const thought_template = new mongoose.Schema({
-    Title: {
+    title: {
         type: String,
         required: true,
     },

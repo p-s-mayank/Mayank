@@ -11,25 +11,17 @@ const user_template = new mongoose.Schema({
         type: String,
         required: true,
     },
-    tokens: [
-        {
-            token: {
-                type: String,
-                required: true,
-            },
-        },
-    ],
+    thoughts: [mongoose.Schema.Types.ObjectId],
+    replies: [mongoose.Schema.Types.ObjectId]
 });
 
 //generating tokens
 user_template.methods.generateAuthToken = async function () {
     try {
         let token = jwt.sign({ _id: this._id }, config.SECRET_KEY);
-        this.tokens = this.tokens.concat({ token });
-        await this.save();
         return token;
     } catch (error) {
         console.log(error);
     }
 };
-module.exports = mongoose.model("registered_users", user_template);
+module.exports = mongoose.model("user", user_template);
