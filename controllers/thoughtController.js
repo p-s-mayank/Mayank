@@ -104,7 +104,7 @@ const delete_reply = async (req, res, next) => {
             );
             if (reply === undefined)
                 res.status(404).json({ message: "Reply not found" });
-            else if (user.replies.includes(reply._id)) {
+            else if (req.user.replies.includes(reply._id)) {
                 thought_template
                     .updateOne(
                         { _id: req.params.id },
@@ -132,10 +132,23 @@ const delete_reply = async (req, res, next) => {
     });
 };
 
+const thoughts_by_user = async (req, res, next) => {
+    user_template.findOne({ username: req.params.username }).then((data) => {
+        if (data === null)
+            res.status(404).json({ message: "User not found" });
+        else {
+            thought_template
+                .find({ _id: { $in: data.thoughts } })
+                .then((data) => res.send(data));
+        }
+    });
+}
+
 module.exports = {
     show_all_thoughts,
     create_thought,
     delete_thought,
     reply_thought,
     delete_reply,
+    thoughts_by_user
 };

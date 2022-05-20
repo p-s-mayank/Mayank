@@ -12,6 +12,7 @@ router.post("/signup", userController.add_user);
 router.post("/signin", userController.login);
 
 router.get("/thoughts", thoughtController.show_all_thoughts);
+router.get("/thoughtsbyuser/:username", thoughtController.thoughts_by_user);
 router.post("/createthought", Auth, thoughtController.create_thought);
 router.post("/replythought/:id", Auth, thoughtController.reply_thought);
 router.delete("/deletethought/:id", Auth, thoughtController.delete_thought);
