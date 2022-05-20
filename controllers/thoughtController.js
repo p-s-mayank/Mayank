@@ -1,10 +1,11 @@
 const thought_template = require("../models/thought");
+const user = require("../models/user");
 const user_template = require("../models/user");
 
 const show_all_thoughts = async (req, res, next) => {
     thought_template.find({}, (err, data) => {
         if (!err) res.send(data);
-        else console.log(err);
+        else res.status(500).json({ message: "Error fetching thoughts" });
     });
 };
 
@@ -39,8 +40,6 @@ const delete_thought = async (req, res, next) => {
         if (data === null)
             res.status(404).json({ message: "Thought not found" });
         else {
-            console.log(data._id);
-            console.log(req.user.thoughts);
             if (req.user.thoughts.includes(data._id)) {
                 thought_template
                     .deleteOne({ _id: req.params.id })
@@ -95,9 +94,48 @@ const reply_thought = async (req, res, next) => {
     });
 };
 
+const delete_reply = async (req, res, next) => {
+    thought_template.findOne({ _id: req.params.id }).then((data) => {
+        if (data === null)
+            res.status(404).json({ message: "Thought not found" });
+        else {
+            const reply = data.replies.find(
+                (reply) => reply._id == req.params.reply_id
+            );
+            if (reply === undefined)
+                res.status(404).json({ message: "Reply not found" });
+            else if (user.replies.includes(reply._id)) {
+                thought_template
+                    .updateOne(
+                        { _id: req.params.id },
+                        { $pull: { replies: { _id: req.params.reply_id } } }
+                    )
+                    .then(() => {
+                        user_template
+                            .findOne({ _id: req.user.id })
+                            .then((data) => {
+                                data.replies.splice(
+                                    data.replies.indexOf(req.params.reply_id),
+                                    1
+                                );
+                                data.save();
+                            });
+                        res.json({ message: "Reply deleted successfully" });
+                    })
+                    .catch((err) =>
+                        res.json({ message: "Error deleting reply" })
+                    );
+            } else {
+                res.status(401).json({ message: "Unauthorized" });
+            }
+        }
+    });
+};
+
 module.exports = {
     show_all_thoughts,
     create_thought,
     delete_thought,
     reply_thought,
+    delete_reply,
 };

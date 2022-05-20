@@ -1,6 +1,5 @@
 const user_template = require("../models/user");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 const show_users = async (req, res, next) => {
     user_template

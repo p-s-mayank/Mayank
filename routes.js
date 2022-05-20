@@ -13,8 +13,8 @@ router.post("/signin", userController.login);
 
 router.get("/thoughts", thoughtController.show_all_thoughts);
 router.post("/createthought", Auth, thoughtController.create_thought);
+router.post("/replythought/:id", Auth, thoughtController.reply_thought);
 router.delete("/deletethought/:id", Auth, thoughtController.delete_thought);
-
-router.get("/identify",Auth,(req,res)=>res.json(req.user?.username))
+router.delete("/deletereply/:id/:reply_id", Auth, thoughtController.delete_reply);
 
 module.exports = router;
