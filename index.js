@@ -20,7 +20,7 @@ mongoose
 
 app.use(express.json());
 app.use(cors());
-app.use("/app", DatabaseStatus, routesUrls);
+app.use("/", DatabaseStatus, routesUrls);
 
 const ErrorHandler = (err, req, res, next) => {
     res.status(500).json({ message: "Server Error", stack: err.stack });
